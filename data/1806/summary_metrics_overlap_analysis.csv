@@ -1,0 +1,3 @@
+﻿model,accuracy,macro_f1,unsafe_recall,controversial_f1,total_errors,unsafe_to_safe,controversial_to_safe,controversial_to_unsafe,safe_to_unsafe
+Qwen3Guard-Gen-0.6B,0.6622,0.594228633173262,0.7674698795180723,0.29663147310206134,1689,256,630,395,34
+Qwen3Guard-Gen-4B,0.6566,0.6087476372801924,0.6951807228915663,0.34890965732087226,1717,252,819,109,2

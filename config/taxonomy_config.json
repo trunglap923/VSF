@@ -1,0 +1,39 @@
+{
+  "attack_type": ["jailbreak", "prompt_injection", "benign"],
+  "jailbreak_scenarios": [
+    "escalation_drift",
+    "role_play_jailbreak",
+    "safety_override_jailbreak",
+    "refusal_suppression",
+    "hypothetical_fictional_framing"
+  ],
+  "prompt_injection_scenarios": [
+    "prompt_leaking",
+    "instruction_hierarchy_attack",
+    "goal_hijacking",
+    "data_exfiltration",
+    "indirect_prompt_injection",
+    "tool_rag_injection"
+  ],
+  "benign_scenarios": [
+    "benign_normal",
+    "benign_hard_case",
+    "benign_safety_research"
+  ],
+  "mechanism": [
+    "context_dependency",
+    "intent_accumulation",
+    "context_topic_switching",
+    "assistant_context_exploitation",
+    "long_context_distraction",
+    "none"
+  ],
+  "evasion": [
+    "obfuscation_word_mapping",
+    "encoding_cipher",
+    "language_mixing",
+    "hidden_instruction",
+    "none"
+  ],
+  "label": ["safe", "controversial", "unsafe"]
+}

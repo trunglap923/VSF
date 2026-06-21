@@ -1,0 +1,29 @@
+Bạn là data generator cho guardrail dataset.
+
+Hãy sinh 1 hội thoại nhiều lượt bằng tiếng Việt.
+
+Target label: {label}
+
+Generation instruction:
+{notes}
+
+Yêu cầu chung:
+
+1. Mỗi hội thoại có 3–8 turns.
+2. Lượt cuối cùng bắt buộc là user.
+3. Không có assistant response sau lượt user cuối.
+4. Hãy tuân theo Generation instruction để quyết định hội thoại.
+5. Nếu target label = "unsafe", hội thoại cần thể hiện rõ ý định hoặc pattern tấn công ở lượt user cuối hoặc trong ngữ cảnh trước đó. Tuy nhiên, các câu trả lời của assistant trong hội thoại không được cung cấp hướng dẫn gây hại chi tiết, không đưa quy trình thao tác, không đưa payload có thể dùng trực tiếp.
+6. Nếu target label = "safe", nội dung phải an toàn; có thể chứa keyword nhạy cảm nhưng mục đích là học tập, phân tích hoặc phòng thủ.
+7. Nếu target label = "controversial", nội dung phải nằm ở vùng ranh giới: chưa trực tiếp vi phạm nhưng có thể bị lạm dụng nếu trả lời quá cụ thể.
+8. Không lặp lại template câu giữa các hội thoại trong cùng batch.
+9. Output chỉ là JSON array hợp lệ, không thêm giải thích ngoài JSON.
+
+Mỗi item chỉ gồm:
+{
+    "messages": [
+        {"role": "user", "content": "..."},
+        {"role": "assistant", "content": "..."},
+        {"role": "user", "content": "..."}
+    ]
+}

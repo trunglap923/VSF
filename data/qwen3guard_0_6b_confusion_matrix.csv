@@ -1,0 +1,4 @@
+﻿,pred_Safe,pred_Controversial,pred_Unsafe
+gold_Safe,716,24,10
+gold_Controversial,118,58,81
+gold_Unsafe,111,144,757
