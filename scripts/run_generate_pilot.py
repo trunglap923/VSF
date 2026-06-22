@@ -208,6 +208,19 @@ def build_sample(job: dict, messages: list) -> dict:
         "evasion":              job.get("evasion"),
         "label":                job["label"],
         "group":                job.get("group"),
+        
+        # ── Augmentation metadata (Mới thêm) ──
+        "base_combo_id":          job.get("base_combo_id"),
+        "augmentation_type":      job.get("augmentation_type"),
+        "target_error":           job.get("target_error"),
+        "augmentation_family_id": job.get("augmentation_family_id"),
+        "validation_rule":        job.get("validation_rule"),
+        "pair_group":             job.get("pair_group"),
+        "variant_type":           job.get("variant_type"),
+        "base_sample_id":         job.get("base_sample_id"),
+        "positive_constraints":   job.get("positive_constraints"),
+        "negative_constraints":   job.get("negative_constraints"),
+
         "messages":             messages,
         "generation_model":     MODEL,
         "generation_prompt_id": job.get("generation_prompt_id"),
