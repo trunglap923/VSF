@@ -1,0 +1,28 @@
+{
+    "dataset_name": "master_train_v1.jsonl",
+    "total_samples": 4841,
+    "original_samples": 4083,
+    "augmentation_samples": 758,
+    "label_distribution": {
+        "controversial": 1073,
+        "unsafe": 2101,
+        "safe": 1667
+    },
+    "sanity_check": {
+        "test_id_leakage": 0,
+        "exact_text_leakage_with_test": 0,
+        "label_mismatch": 0,
+        "invalid_last_message_role": 0,
+        "invalid_top_level_labels": 0
+    },
+    "notes": {
+        "ngram_overlap_10_gram_original": 598,
+        "ngram_overlap_reason": "Đây là overlap ở mức template/base-context hoặc các cụm từ chối (refusal phrases) phổ biến trong tập Original Train, hoàn toàn không phải exact sample leakage. Không trùng lặp final_user và không trùng lặp sample_id với tập Test."
+    },
+    "random_seed": 42,
+    "input_files": [
+        "final_train_candidates.jsonl",
+        "augmentation_after_leakage_v1.jsonl"
+    ],
+    "output_file": "master_train_v1.jsonl"
+}

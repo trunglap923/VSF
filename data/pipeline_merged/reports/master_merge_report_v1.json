@@ -1,0 +1,36 @@
+{
+    "original_train_count": 4506,
+    "augmentation_count": 758,
+    "master_train_count": 5264,
+    "label_distribution_before_merge_original": {
+        "unsafe": 2206,
+        "controversial": 1114,
+        "safe": 1186
+    },
+    "label_distribution_augmentation": {
+        "unsafe": 321,
+        "safe": 255,
+        "controversial": 182
+    },
+    "label_distribution_master": {
+        "unsafe": 2527,
+        "controversial": 1296,
+        "safe": 1441
+    },
+    "combo_distribution_augmentation": {
+        "AUG_PI14_U01": 67,
+        "AUG_JB09_U01": 58,
+        "AUG_PI01_U01": 71,
+        "AUG_PI12_U01": 50,
+        "AUG_PI02_U01": 75,
+        "AUG_BN03_S01": 149,
+        "AUG_BN11_S01": 106,
+        "AUG_BN11_C01": 182
+    },
+    "random_seed": 42,
+    "inputs": [
+        "final_train_candidates.jsonl",
+        "augmentation_after_leakage_v1.jsonl"
+    ],
+    "output": "master_train_v1.jsonl"
+}

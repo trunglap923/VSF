@@ -1,0 +1,88 @@
+{
+    "random_seed": 42,
+    "input_checksum": "d6aad53c38963181ed1b34a04f9189ea",
+    "total_samples_before_split": 4841,
+    "splits": {
+        "ft_train_v1": {
+            "filepath": "data\\pipeline_merged\\splits\\ft_train_v1.jsonl",
+            "checksum": "c50538fcebf6634be0d55c33811d471b",
+            "stats": {
+                "total": 3388,
+                "labels": {
+                    "safe": 1166,
+                    "controversial": 751,
+                    "unsafe": 1471
+                },
+                "sources": {
+                    "original": 2858,
+                    "augmentation": 530
+                },
+                "groups": {
+                    "benign_research": 247,
+                    "benign_hard": 404,
+                    "controversial": 735,
+                    "jailbreak_core": 279,
+                    "pi_hard": 429,
+                    "pi_core": 306,
+                    "jailbreak_hard": 374,
+                    "aug_pilot": 530,
+                    "benign_core": 84
+                }
+            }
+        },
+        "ft_val_v1": {
+            "filepath": "data\\pipeline_merged\\splits\\ft_val_v1.jsonl",
+            "checksum": "883487fe567182f968cad44defd98be5",
+            "stats": {
+                "total": 484,
+                "labels": {
+                    "controversial": 107,
+                    "safe": 167,
+                    "unsafe": 210
+                },
+                "sources": {
+                    "original": 408,
+                    "augmentation": 76
+                },
+                "groups": {
+                    "controversial": 92,
+                    "benign_core": 10,
+                    "jailbreak_core": 45,
+                    "benign_research": 28,
+                    "aug_pilot": 76,
+                    "jailbreak_hard": 59,
+                    "benign_hard": 67,
+                    "pi_core": 52,
+                    "pi_hard": 55
+                }
+            }
+        },
+        "router_pool_v1": {
+            "filepath": "data\\pipeline_merged\\splits\\router_pool_v1.jsonl",
+            "checksum": "5471ca49abe6f6e6c8adf464cf02f5df",
+            "stats": {
+                "total": 969,
+                "labels": {
+                    "safe": 334,
+                    "controversial": 215,
+                    "unsafe": 420
+                },
+                "sources": {
+                    "original": 817,
+                    "augmentation": 152
+                },
+                "groups": {
+                    "benign_hard": 125,
+                    "jailbreak_hard": 127,
+                    "benign_core": 16,
+                    "controversial": 214,
+                    "jailbreak_core": 75,
+                    "aug_pilot": 152,
+                    "pi_core": 83,
+                    "pi_hard": 122,
+                    "benign_research": 55
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "model_tokenizer": "Qwen/Qwen2.5-0.5B",
+    "cutoff_threshold": 2048,
+    "train_sft": {
+        "total_samples": 3388,
+        "mean_tokens": 532.2033648170012,
+        "median_tokens": 521.0,
+        "p90_tokens": 670.0,
+        "p95_tokens": 724.6499999999996,
+        "p99_tokens": 837.5200000000004,
+        "max_tokens": 1291,
+        "samples_over_2048": 0,
+        "over_cutoff_ratio": 0.0
+    },
+    "val_sft": {
+        "total_samples": 484,
+        "mean_tokens": 529.5309917355372,
+        "median_tokens": 520.5,
+        "p90_tokens": 668.0,
+        "p95_tokens": 713.3999999999999,
+        "p99_tokens": 863.8500000000001,
+        "max_tokens": 1032,
+        "samples_over_2048": 0,
+        "over_cutoff_ratio": 0.0
+    }
+}

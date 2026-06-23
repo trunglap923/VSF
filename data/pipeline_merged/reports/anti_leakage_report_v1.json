@@ -1,0 +1,17 @@
+{
+    "augmentation_input": 860,
+    "dropped_by_exact": 0,
+    "dropped_by_final_user": 0,
+    "dropped_by_ngram": 102,
+    "augmentation_after_leakage": 758,
+    "label_distribution_before": {
+        "unsafe": 400,
+        "safe": 268,
+        "controversial": 192
+    },
+    "label_distribution_after": {
+        "unsafe": 321,
+        "safe": 255,
+        "controversial": 182
+    }
+}

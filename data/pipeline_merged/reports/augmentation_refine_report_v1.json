@@ -1,0 +1,27 @@
+{
+    "input_clean_all": 1638,
+    "dropped_by_confidence": 0,
+    "dropped_by_dedup": 0,
+    "dropped_by_rule_validation": 0,
+    "selected_after_cap": 860,
+    "label_distribution_before": {
+        "unsafe": 1178,
+        "safe": 268,
+        "controversial": 192
+    },
+    "label_distribution_after": {
+        "unsafe": 400,
+        "safe": 268,
+        "controversial": 192
+    },
+    "combo_distribution_after": {
+        "AUG_PI14_U01": 80,
+        "AUG_JB09_U01": 80,
+        "AUG_PI01_U01": 80,
+        "AUG_PI12_U01": 80,
+        "AUG_PI02_U01": 80,
+        "AUG_BN03_S01": 156,
+        "AUG_BN11_S01": 112,
+        "AUG_BN11_C01": 192
+    }
+}
