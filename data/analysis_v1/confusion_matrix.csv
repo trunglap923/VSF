@@ -1,0 +1,5 @@
+gold_label,controversial,safe,unsafe,All
+controversial,38,23,12,73
+safe,0,150,0,150
+unsafe,12,7,181,200
+All,50,180,193,423

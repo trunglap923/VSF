@@ -14,7 +14,8 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from datasets import load_dataset
-from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
+from trl import SFTTrainer
+from transformers import DataCollatorForSeq2Seq
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Custom QLoRA Training Script")
@@ -28,50 +29,30 @@ def load_config(yaml_path):
         config = yaml.safe_load(f)
     return config
 
-def debug_loss_mask_preview(sample_messages, tokenizer, response_template_ids):
+def debug_manual_mask_preview(sample_messages, tokenizer, max_seq_length=2048):
     """
-    Hàm debug quan trọng nhất: Kiểm tra giả lập Loss Masking của TRL DataCollator.
+    Debug manual loss masking: verify [MASK] trên prompt, [LOSS] trên 'Safety: <Label>'.
     """
     print("\n" + "="*80)
-    print("🛠️ DEBUG LOSS MASK PREVIEW (TRL Collator Logic Simulation)")
+    print("🛠️ DEBUG MANUAL LOSS MASK PREVIEW")
     print("="*80)
-    
-    # Simulate SFTTrainer formatting
-    text = tokenizer.apply_chat_template(sample_messages, tokenize=False, add_generation_prompt=False)
-    input_ids = tokenizer.encode(text, add_special_tokens=False)
-    
-    # Simulate TRL masking
-    labels = input_ids.copy()
-    match_idx = -1
-    
-    for i in range(len(input_ids) - len(response_template_ids) + 1):
-        if input_ids[i:i+len(response_template_ids)] == response_template_ids:
-            match_idx = i
-            break
-            
-    if match_idx == -1:
-        print("❌ LỖI NGHIÊM TRỌNG: Không tìm thấy response_template_ids trong input_ids!")
-        print(f"Response IDs cần tìm: {response_template_ids}")
-        print(f"Decoded Response: {repr(tokenizer.decode(response_template_ids))}")
-        print("Vui lòng sử dụng FALLBACK manual masking thay thế!")
-        return False
-        
-    mask_end = match_idx + len(response_template_ids)
-    for i in range(mask_end):
-        labels[i] = -100
-        
-    print("✅ Đã tìm thấy Response Template và thực hiện Masking.\n")
+
+    batch = {"messages": [sample_messages]}
+    out = manual_preprocess_function(batch, tokenizer, max_seq_length)
+
+    input_ids = out["input_ids"][0]
+    labels = out["labels"][0]
+
     print(f"{'TYPE':<10} | {'TOKEN_ID':<10} | {'TOKEN_TEXT'}")
     print("-" * 50)
-    
+
     for tok_id, lbl_id in zip(input_ids, labels):
         token_str = tokenizer.decode([tok_id])
-        token_repr = repr(token_str)
         if lbl_id == -100:
-            print(f"[MASK]     | {tok_id:<10} | {token_repr}")
+            print(f"[MASK]     | {tok_id:<10} | {repr(token_str)}")
         else:
-            print(f"[LOSS]     | {tok_id:<10} | {token_repr}")
-            
+            print(f"[LOSS]     | {tok_id:<10} | {repr(token_str)}")
+
     print("="*80 + "\n")
     return True
 
@@ -116,12 +97,7 @@ def manual_preprocess_function(examples, tokenizer, max_seq_length):
         "attention_mask": attention_mask_list
     }
 
-def formatting_prompts_func(example, tokenizer):
-    output_texts = []
-    for i in range(len(example['messages'])):
-        text = tokenizer.apply_chat_template(example['messages'][i], tokenize=False, add_generation_prompt=False)
-        output_texts.append(text)
-    return output_texts
+# formatting_prompts_func không còn cần thiết sau khi chuyển sang manual masking.
 
 def main():
     args = parse_args()
@@ -159,22 +135,20 @@ def main():
         train_dataset = train_dataset.select(range(min(50, len(train_dataset))))
         eval_dataset = eval_dataset.select(range(min(20, len(eval_dataset))))
         
-    # 4. Debug Mask Preview
+    # 4. Debug Mask Preview (Manual Masking)
     sample_messages = train_dataset[0]['messages']
-    
-    # Định nghĩa Response Template cho Qwen (ChatML)
-    # add_generation_prompt=True thường thêm `<|im_start|>assistant\n`
-    response_template = "<|im_start|>assistant\n"
-    response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)
-    
-    is_mask_valid = debug_loss_mask_preview(sample_messages, tokenizer, response_template_ids)
-    
+    is_mask_valid = debug_manual_mask_preview(
+        sample_messages,
+        tokenizer,
+        config.get("max_seq_length", 2048)
+    )
+
     if args.skip_training:
         print("🛑 --skip_training được bật. Dừng script.")
         return
-        
+
     if not is_mask_valid:
-        print("❌ Debug Mask thất bại. Vui lòng sử dụng FALLBACK manual_preprocess_function.")
+        print("❌ Debug Mask thất bại. Kiểm tra lại manual_preprocess_function.")
         sys.exit(1)
 
     # 5. Load Model & LoRA
@@ -206,10 +180,26 @@ def main():
     model = get_peft_model(model, lora_config)
     model.print_trainable_parameters()
     
-    # 6. Data Collator
-    collator = DataCollatorForCompletionOnlyLM(
-        response_template=response_template_ids, 
-        tokenizer=tokenizer
+    # 6. Preprocess dataset bằng manual assistant-only loss masking
+    print("🔧 Đang preprocess dataset bằng manual assistant-only loss masking...")
+    max_seq = config.get("max_seq_length", 2048)
+
+    train_dataset = train_dataset.map(
+        lambda x: manual_preprocess_function(x, tokenizer, max_seq),
+        batched=True,
+        remove_columns=train_dataset.column_names,
+    )
+    eval_dataset = eval_dataset.map(
+        lambda x: manual_preprocess_function(x, tokenizer, max_seq),
+        batched=True,
+        remove_columns=eval_dataset.column_names,
+    )
+
+    collator = DataCollatorForSeq2Seq(
+        tokenizer=tokenizer,
+        padding=True,
+        label_pad_token_id=-100,
+        return_tensors="pt",
     )
 
     # 7. Trainer setup
@@ -236,15 +226,14 @@ def main():
         report_to="none" # Disable wandb for local run
     )
     
+    # Dataset đã có input_ids/labels/attention_mask từ manual masking,
+    # không cần formatting_func hay packing.
     trainer = SFTTrainer(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        formatting_func=lambda x: formatting_prompts_func(x, tokenizer),
         data_collator=collator,
-        max_seq_length=config.get('max_seq_length', 2048),
-        packing=False # BẮT BUỘC ĐỂ DATA COLLATOR HOẠT ĐỘNG
     )
     
     # 8. Train & Save

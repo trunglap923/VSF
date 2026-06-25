@@ -1,0 +1,83 @@
+{
+  "random_seed": 42,
+  "val_ratio_target": 0.125,
+  "split_strategy": "grouped_by_base_combo",
+  "total_input_samples": 4841,
+  "total_base_combos": 51,
+  "train_base_combos": [
+    "BN02",
+    "BN03",
+    "BN04",
+    "BN06",
+    "BN07",
+    "BN08",
+    "BN10",
+    "BN11",
+    "BN12",
+    "BN13",
+    "CT03",
+    "CT06",
+    "CT07",
+    "CT08",
+    "JB01",
+    "JB02",
+    "JB03",
+    "JB04",
+    "JB05",
+    "JB06",
+    "JB07",
+    "JB08",
+    "JB09",
+    "JB11",
+    "JB12",
+    "JB13",
+    "JB14",
+    "JB15",
+    "PI01",
+    "PI02",
+    "PI03",
+    "PI04",
+    "PI05",
+    "PI06",
+    "PI07",
+    "PI09",
+    "PI10",
+    "PI12",
+    "PI13",
+    "PI14",
+    "PI15",
+    "PI16",
+    "PI20"
+  ],
+  "val_base_combos": [
+    "BN05",
+    "BN09",
+    "CT02",
+    "CT04",
+    "CT05",
+    "JB10",
+    "PI11",
+    "PI19"
+  ],
+  "base_combo_overlap": 0,
+  "ft_train_grouped_v2": {
+    "total": 4187,
+    "labels": {
+      "controversial": 884,
+      "safe": 1361,
+      "unsafe": 1942
+    },
+    "combos": 51,
+    "base_combos": 43
+  },
+  "ft_val_grouped_v2": {
+    "total": 654,
+    "labels": {
+      "unsafe": 159,
+      "safe": 306,
+      "controversial": 189
+    },
+    "combos": 8,
+    "base_combos": 8
+  }
+}

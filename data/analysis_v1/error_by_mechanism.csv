@@ -1,0 +1,6 @@
+mechanism,total,errors,error_rate
+context_dependency,73,35,0.4794520547945205
+long_context_distraction,64,11,0.171875
+assistant_context_exploitation,67,8,0.11940298507462686
+context_topic_switching,69,0,0.0
+none,150,0,0.0
