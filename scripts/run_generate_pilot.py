@@ -149,6 +149,7 @@ def call_api(job: dict) -> dict:
             response = client.responses.create(
                 model=MODEL,
                 input=prompt,
+                timeout=60.0,
                 temperature=0.85,
                 max_output_tokens=1500,
                 text={

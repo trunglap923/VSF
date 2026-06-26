@@ -63,9 +63,9 @@
   "ft_train_grouped_v2": {
     "total": 4187,
     "labels": {
+      "unsafe": 1942,
       "controversial": 884,
-      "safe": 1361,
-      "unsafe": 1942
+      "safe": 1361
     },
     "combos": 51,
     "base_combos": 43
@@ -73,8 +73,8 @@
   "ft_val_grouped_v2": {
     "total": 654,
     "labels": {
-      "unsafe": 159,
       "safe": 306,
+      "unsafe": 159,
       "controversial": 189
     },
     "combos": 8,

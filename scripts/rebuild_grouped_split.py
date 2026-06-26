@@ -22,13 +22,14 @@ from pathlib import Path
 from collections import Counter, defaultdict
 
 BASE_DIR    = Path(__file__).resolve().parent.parent
-MASTER_FILE = BASE_DIR / "data" / "master_train_v1.jsonl"
+MASTER_FILE = BASE_DIR / "data" / "master_train_v3.jsonl"
+ROUTER_FILE = BASE_DIR / "data" / "splits" / "router_pool_v3.jsonl"
 OUT_DIR     = BASE_DIR / "data" / "splits"
 REPORT_DIR  = OUT_DIR / "reports"
 
-OUT_TRAIN   = OUT_DIR / "ft_train_grouped_v2.jsonl"
-OUT_VAL     = OUT_DIR / "ft_val_grouped_v2.jsonl"
-OUT_REPORT  = REPORT_DIR / "grouped_split_report_v2.json"
+OUT_TRAIN   = OUT_DIR / "ft_train_grouped_v3.jsonl"
+OUT_VAL     = OUT_DIR / "ft_val_grouped_v3.jsonl"
+OUT_REPORT  = REPORT_DIR / "grouped_split_report_v3.json"
 
 RANDOM_SEED   = 42
 VAL_RATIO     = 0.125   # ~12.5% samples → val
@@ -55,14 +56,27 @@ def get_stats(rows: list[dict]) -> dict:
     }
 
 # ─── load ─────────────────────────────────────────────────
+print(f"📥 Loading {ROUTER_FILE.name}...")
+router_ids = set()
+if ROUTER_FILE.exists():
+    with open(ROUTER_FILE, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                s = json.loads(line)
+                router_ids.add(s["sample_id"])
+print(f"   {len(router_ids)} router samples loaded.")
+
 print(f"📥 Loading {MASTER_FILE.name}...")
 samples: list[dict] = []
 with open(MASTER_FILE, encoding="utf-8") as f:
     for line in f:
         line = line.strip()
         if line:
-            samples.append(json.loads(line))
-print(f"   {len(samples)} samples loaded.")
+            s = json.loads(line)
+            if s["sample_id"] not in router_ids:
+                samples.append(s)
+print(f"   {len(samples)} samples loaded (excluding router pool).")
 
 # ─── group by base_combo ───────────────────────────────────
 groups: dict[str, list[dict]] = defaultdict(list)
@@ -155,8 +169,8 @@ report = {
     "train_base_combos": sorted(train_combos),
     "val_base_combos": sorted(val_combos),
     "base_combo_overlap": 0,
-    "ft_train_grouped_v2": get_stats(train_samples),
-    "ft_val_grouped_v2":   get_stats(val_samples),
+    "ft_train_grouped_v3": get_stats(train_samples),
+    "ft_val_grouped_v3":   get_stats(val_samples),
 }
 
 with open(OUT_REPORT, "w", encoding="utf-8") as f:
@@ -167,8 +181,8 @@ print(f"\n📊 Split Summary:")
 print(f"   Train: {len(train_samples)} samples | {len(train_combos)} base_combos")
 print(f"   Val  : {len(val_samples)} samples | {len(val_combos)} base_combos")
 print(f"   Val% : {len(val_samples)/total_samples*100:.1f}%")
-print(f"\n   Val label dist  : {report['ft_val_grouped_v2']['labels']}")
-print(f"   Train label dist: {report['ft_train_grouped_v2']['labels']}")
+print(f"\n   Val label dist  : {report['ft_val_grouped_v3']['labels']}")
+print(f"   Train label dist: {report['ft_train_grouped_v3']['labels']}")
 print(f"\n   Val base_combos : {sorted(val_combos)}")
 print(f"\n✅ Output: {OUT_TRAIN.name}, {OUT_VAL.name}")
 print(f"📄 Report: {OUT_REPORT.name}")

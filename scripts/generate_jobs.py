@@ -9,13 +9,18 @@ Output: data/generation_jobs.jsonl
 
 import json
 import random
+import sys
 from pathlib import Path
 from typing import Any
 
 # ── Đường dẫn ────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent   # thư mục gốc project
-INPUT_PATH  = BASE_DIR / "data" / "combination_plan.json"
-OUTPUT_PATH = BASE_DIR / "data" / "generation_jobs.jsonl"
+if len(sys.argv) > 2:
+    INPUT_PATH = Path(sys.argv[1])
+    OUTPUT_PATH = Path(sys.argv[2])
+else:
+    INPUT_PATH  = BASE_DIR / "data" / "combination_test_plan.json"
+    OUTPUT_PATH = BASE_DIR / "data" / "generation_test_jobs.jsonl"
 
 SEED = 42
 random.seed(SEED)
@@ -482,7 +487,7 @@ def main() -> None:
                 "mechanism":   combo["mechanism"],
                 "evasion":     combo["evasion"],
                 "label":       combo["label"],
-                "priority":    combo["priority"],
+                "priority":    combo.get("priority", "medium"),
                 "group":       combo["group"],
                 "pair_group":  combo.get("pair_group", ""),
 

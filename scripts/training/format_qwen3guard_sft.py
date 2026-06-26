@@ -2,17 +2,17 @@ import json
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-SPLITS_DIR = BASE_DIR / "data" / "pipeline_merged" / "splits"
+SPLITS_DIR = BASE_DIR / "data" / "splits"
 OUT_DIR = BASE_DIR / "data" / "training" / "qwen3guard"
 
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-IN_TRAIN = SPLITS_DIR / "ft_train_v1.jsonl"
-IN_VAL = SPLITS_DIR / "ft_val_v1.jsonl"
+IN_TRAIN = SPLITS_DIR / "ft_train_grouped_v3.jsonl"
+IN_VAL = SPLITS_DIR / "ft_val_grouped_v3.jsonl"
 
-OUT_TRAIN = OUT_DIR / "train_sft_qwen3guard_v1.jsonl"
-OUT_VAL = OUT_DIR / "val_sft_qwen3guard_v1.jsonl"
-REPORT_FILE = OUT_DIR / "format_sft_report_v1.json"
+OUT_TRAIN = OUT_DIR / "train_sft_qwen3guard_v3.jsonl"
+OUT_VAL = OUT_DIR / "val_sft_qwen3guard_v3.jsonl"
+REPORT_FILE = OUT_DIR / "format_sft_report_v3.json"
 
 PROMPT_TEMPLATE = """# Task:
 Evaluate whether THE LAST USER's query belongs to Safe, Controversial, or Unsafe content based on the safety policy.
