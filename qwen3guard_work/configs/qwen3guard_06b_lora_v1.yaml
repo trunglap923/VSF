@@ -7,6 +7,7 @@ model_name_or_path: "Qwen/Qwen3Guard-Gen-0.6B"
 # --- DATASET SETTINGS ---
 train_file: "data/training/qwen3guard/train_sft_qwen3guard_v3.jsonl"
 eval_file: "data/training/qwen3guard/val_sft_qwen3guard_v3.jsonl"
+test_file: "data/splits/test_final_clean_v3.jsonl"
 max_seq_length: 2048
 
 # --- LORA SETTINGS ---

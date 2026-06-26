@@ -9,16 +9,25 @@ files_to_copy = [
     "data/training/qwen3guard/train_sft_qwen3guard_v3.jsonl",
     "data/training/qwen3guard/val_sft_qwen3guard_v3.jsonl",
     "data/splits/router_pool_v3.jsonl",
-    "data/splits/test_final_original_v3.jsonl",
+    "data/splits/test_final_clean_v3.jsonl",
     "scripts/training/train.py",
     "scripts/evaluation/evaluate_qwen3guard_lora.py",
     "scripts/evaluation/error_analysis.py",
     "configs/qwen3guard_06b_lora_v1.yaml",
     "requirements.txt",
-    "setup_vastai.sh"
+    "setup_vastai.sh",
+    "train.sh",
+    "eval.sh"
 ]
 
 print(f"Bắt đầu copy các file sang thư mục: {dest_dir}")
+import shutil
+# Copy README to README.md in destination
+if os.path.exists("README_vast.md"):
+    dest_path = os.path.join(dest_dir, "README.md")
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    shutil.copy2("README_vast.md", dest_path)
+    print(f"✅ Đã copy: README_vast.md -> README.md")
 
 for file_path in files_to_copy:
     if os.path.exists(file_path):

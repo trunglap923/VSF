@@ -17,5 +17,7 @@ pip install -r requirements.txt
 # uncomment and add token if needed
 # wandb login "YOUR_WANDB_TOKEN"
 
+chmod +x train.sh eval.sh
+
 echo "✅ Cài đặt hoàn tất! Bạn có thể bắt đầu quá trình train bằng lệnh:"
-echo "python scripts/training/train.py --config configs/qwen3guard_06b_lora_v1.yaml"
+echo "./train.sh"
