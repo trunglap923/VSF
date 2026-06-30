@@ -6,6 +6,7 @@ from pathlib import Path
 from tqdm import tqdm
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, classification_report
 import warnings
+import time
 # Ignore some scikit-learn warnings for cleaner output
 warnings.filterwarnings('ignore', category=UserWarning)
 
@@ -32,7 +33,7 @@ def calculate_metrics(y_true, y_pred, costs, name=""):
         "Accuracy": acc,
         "Macro F1": macro_f1,
         "Unsafe Recall": unsafe_recall,
-        "Decision Cost": avg_cost
+        "Decision Cost": avg_cost,
     }
 
 def main():
@@ -81,6 +82,7 @@ def main():
     y_true = []
     y_pred = []
     costs = []
+    latencies = []
     routed_4b_count = 0
 
     print(f"🔄 Bắt đầu chạy Inference trên {len(data)} mẫu (Kết quả lưu tại {results_file.name})...")
@@ -91,11 +93,14 @@ def main():
             gold_label = item.get("label", "safe").lower()
             
             # Predict
+            start_time = time.time()
             try:
                 res = system.infer(messages)
             except Exception as e:
                 print(f"Lỗi inference mẫu {item.get('sample_id', 'unknown')}: {e}")
                 continue
+                
+            latency = time.time() - start_time
                 
             pred_label = res["final_prediction"]
             routed_to = res["routed_to"]
@@ -110,6 +115,7 @@ def main():
             y_true.append(gold_label)
             y_pred.append(pred_label)
             costs.append(cost)
+            latencies.append(latency)
             
             if routed_to == "4B":
                 routed_4b_count += 1
@@ -122,7 +128,8 @@ def main():
                 "prediction": pred_label,
                 "routed_to": routed_to,
                 "confidence": confidence,
-                "cost": cost
+                "cost": cost,
+                "latency_sec": latency
             }
             out_f.write(json.dumps(out_item, ensure_ascii=False) + "\n")
             
@@ -134,21 +141,23 @@ def main():
         
     # Tính toán Metric
     metrics = calculate_metrics(y_true, y_pred, costs, name="SafeRoute(Ours)")
+    metrics["Latency (s)"] = sum(latencies) / len(latencies) if latencies else 0.0
     usage_4b = (routed_4b_count / len(y_true)) * 100
     
     print("\n" + "="*95)
     print(f"🏆 KẾT QUẢ ĐÁNH GIÁ TRÊN BỘ: {dataset_name.upper()} 🏆")
     print("="*95)
-    header = f"| {'System':<18} | {'Accuracy':<8} | {'Macro F1':<8} | {'Unsafe Recall':<13} | {'Dec. Cost':<9} | {'Large Usage':<11} |"
+    header = f"| {'System':<18} | {'Accuracy':<8} | {'Macro F1':<8} | {'Unsafe Recall':<13} | {'Dec. Cost':<9} | {'Latency':<8} | {'Large Usage':<11} |"
     print(header)
-    print("|" + "-"*20 + "|" + "-"*10 + "|" + "-"*10 + "|" + "-"*15 + "|" + "-"*11 + "|" + "-"*13 + "|")
+    print("|" + "-"*20 + "|" + "-"*10 + "|" + "-"*10 + "|" + "-"*15 + "|" + "-"*11 + "|" + "-"*10 + "|" + "-"*13 + "|")
     
     acc = f"{metrics['Accuracy']:.4f}"
     f1 = f"{metrics['Macro F1']:.4f}"
     rec = f"{metrics['Unsafe Recall']:.4f}"
     cost = f"{metrics['Decision Cost']:.3f}"
+    lat = f"{metrics['Latency (s)']:.3f}s"
     use = f"{usage_4b:.1f}%"
-    print(f"| {metrics['Name']:<18} | {acc:<8} | {f1:<8} | {rec:<13} | {cost:<9} | {use:<11} |")
+    print(f"| {metrics['Name']:<18} | {acc:<8} | {f1:<8} | {rec:<13} | {cost:<9} | {lat:<8} | {use:<11} |")
     print("="*95)
     
     print("\n📊 CHI TIẾT TỪNG NHÃN (CLASSIFICATION REPORT)")
@@ -163,8 +172,8 @@ def main():
     with open(summary_file, "w", encoding="utf-8") as f:
         f.write(f"Dataset: {dataset_name}\n")
         f.write(header + "\n")
-        f.write("|" + "-"*20 + "|" + "-"*10 + "|" + "-"*10 + "|" + "-"*15 + "|" + "-"*11 + "|" + "-"*13 + "|\n")
-        f.write(f"| {metrics['Name']:<18} | {acc:<8} | {f1:<8} | {rec:<13} | {cost:<9} | {use:<11} |\n\n")
+        f.write("|" + "-"*20 + "|" + "-"*10 + "|" + "-"*10 + "|" + "-"*15 + "|" + "-"*11 + "|" + "-"*10 + "|" + "-"*13 + "|\n")
+        f.write(f"| {metrics['Name']:<18} | {acc:<8} | {f1:<8} | {rec:<13} | {cost:<9} | {lat:<8} | {use:<11} |\n\n")
         f.write(classification_report(y_true, y_pred, labels=valid_labels, digits=4, zero_division=0))
         
     print(f"✅ Đã lưu tóm tắt báo cáo tại: {summary_file}")
