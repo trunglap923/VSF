@@ -13,7 +13,41 @@ files_to_copy = [
     "scripts/training/train.py",
     "scripts/evaluation/evaluate_qwen3guard_lora.py",
     "scripts/evaluation/error_analysis.py",
+    # Data formatting & Benchmarking
+    "scripts/evaluation/format_wildjailbreak_benchmark.py",
+    "scripts/evaluation/format_jbb_behaviors_benchmark.py",
+    "scripts/evaluation/format_jailbreak3_guardrails.py",
+    "scripts/evaluation/format_prompt_injections.py",
+    "scripts/evaluation/format_multi_turn_jailbreak.py",
+    "scripts/evaluation/zip_benchmarks.py",
+    "scripts/evaluation/evaluate_benchmark_e2e.py",
+    "scripts/evaluation/compare_models.py",
+    "data/splits/test_final_original_v3.jsonl",
+    "data/splits/wildjailbreak_benchmark.jsonl",
+    "data/splits/jbb_behaviors_benchmark.jsonl",
+    "data/splits/jailbreak3_guardrails_benchmark.jsonl",
+    "data/splits/prompt_injections_benchmark.jsonl",
+    "data/splits/multi_turn_jailbreak_benchmark.jsonl",
+    "BENCHMARK_GUIDE.md",
+    
+    # Router Pipeline scripts
+    "scripts/training/extract_features.py",
+    "scripts/training/verify_router_dataset.py",
+    "scripts/training/build_router_dataset.py",
+    "scripts/training/train_router.py",
+    "scripts/evaluation/router_inference.py",
+    "scripts/evaluation/evaluate_e2e_system.py",
+    
+    # New Test Scripts
+    "scripts/evaluation/test_inference_gpu.py",
+    "scripts/evaluation/test_router_speed.py",
+    "scripts/evaluation/single_file_router_test.py",
+    
+    # Config files
     "configs/qwen3guard_06b_lora_v1.yaml",
+    "configs/qwen3guard_4b_lora_v1.yaml",
+    "configs/router_config_v1.yaml",
+    "configs/cost_matrix_v1.yaml",
     "requirements.txt",
     "setup_vastai.sh",
     "train.sh",

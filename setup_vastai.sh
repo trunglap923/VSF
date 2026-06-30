@@ -9,6 +9,20 @@ echo "📦 Cài đặt thư viện Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
+# 3. Khắc phục triệt để lỗi thư viện CUDA (Bitsandbytes 4-bit)
+echo "🔧 Tự động biên dịch bitsandbytes để tương thích 100% với CUDA của máy chủ..."
+pip uninstall -y bitsandbytes
+pip install cmake
+CURRENT_DIR=$(pwd)
+git clone https://github.com/bitsandbytes-foundation/bitsandbytes.git /tmp/bitsandbytes_src
+cd /tmp/bitsandbytes_src
+cmake -DCOMPUTE_BACKEND=cuda -S . -B build
+cmake --build build -j$(nproc)
+pip install .
+cd "$CURRENT_DIR"
+rm -rf /tmp/bitsandbytes_src
+echo "✅ Đã nạp thành công bộ thư viện C++ lõi của Native CUDA!"
+
 # 3. Log in HuggingFace (nếu cần tải model private)
 # uncomment and add token if needed
 # huggingface-cli login --token "YOUR_HF_TOKEN" --add-to-git-credential
